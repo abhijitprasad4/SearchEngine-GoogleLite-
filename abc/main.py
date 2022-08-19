@@ -20,11 +20,18 @@ T_k1,T_k2,T_k3,T_k4,T_k5,T_k6,T_k7,T_k8,T_k9,T_k10,T_k11,T_k12,T_k13,T_k14,T_k15
 #list of all title dictionarys
 T_List = [T_k1,T_k2,T_k3,T_k4,T_k5,T_k6,T_k7,T_k8,T_k9,T_k10,T_k11,T_k12,T_k13,T_k14,T_k15,T_k16,T_k17,T_k18,T_k19,T_k20,T_k21,T_k22,T_k23,T_k24,T_k25,T_k26,T_k27,T_k28,T_k29,T_k30,T_k31,T_k32,T_k33,T_k34,T_k35,T_k36,T_k37,T_k38,T_k39,T_k40,T_k41,T_k42,T_k43,T_k44,T_k45,T_k46,T_k47,T_k48,T_k49,T_k50]
 
+#creating another dict for the final rule i.e perfer word that occur in starting of the document(article)
+first_occ_dict_k1, first_occ_dict_k2, first_occ_dict_k3, first_occ_dict_k4, first_occ_dict_k5, first_occ_dict_k6, first_occ_dict_k7, first_occ_dict_k8, first_occ_dict_k9, first_occ_dict_k10, first_occ_dict_k11, first_occ_dict_k12, first_occ_dict_k13, first_occ_dict_k14, first_occ_dict_k15, first_occ_dict_k16, first_occ_dict_k17, first_occ_dict_k18, first_occ_dict_k19, first_occ_dict_k20, first_occ_dict_k21, first_occ_dict_k22, first_occ_dict_k23, first_occ_dict_k24, first_occ_dict_k25, first_occ_dict_k26, first_occ_dict_k27, first_occ_dict_k28, first_occ_dict_k29, first_occ_dict_k30, first_occ_dict_k31, first_occ_dict_k32, first_occ_dict_k33, first_occ_dict_k34, first_occ_dict_k35, first_occ_dict_k36, first_occ_dict_k37, first_occ_dict_k38, first_occ_dict_k39, first_occ_dict_k40, first_occ_dict_k41, first_occ_dict_k42, first_occ_dict_k43, first_occ_dict_k44, first_occ_dict_k45, first_occ_dict_k46, first_occ_dict_k47, first_occ_dict_k48, first_occ_dict_k49, first_occ_dict_k50 = {},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
+first_occ_dict_list = [first_occ_dict_k1, first_occ_dict_k2, first_occ_dict_k3, first_occ_dict_k4, first_occ_dict_k5, first_occ_dict_k6, first_occ_dict_k7, first_occ_dict_k8, first_occ_dict_k9, first_occ_dict_k10, first_occ_dict_k11, first_occ_dict_k12, first_occ_dict_k13, first_occ_dict_k14, first_occ_dict_k15, first_occ_dict_k16, first_occ_dict_k17, first_occ_dict_k18, first_occ_dict_k19, first_occ_dict_k20, first_occ_dict_k21, first_occ_dict_k22, first_occ_dict_k23, first_occ_dict_k24, first_occ_dict_k25, first_occ_dict_k26, first_occ_dict_k27, first_occ_dict_k28, first_occ_dict_k29, first_occ_dict_k30, first_occ_dict_k31, first_occ_dict_k32, first_occ_dict_k33, first_occ_dict_k34, first_occ_dict_k35, first_occ_dict_k36, first_occ_dict_k37, first_occ_dict_k38, first_occ_dict_k39, first_occ_dict_k40, first_occ_dict_k41, first_occ_dict_k42, first_occ_dict_k43, first_occ_dict_k44, first_occ_dict_k45, first_occ_dict_k46, first_occ_dict_k47, first_occ_dict_k48, first_occ_dict_k49, first_occ_dict_k50]
+
+
 # traversing all words of all articles
-for x,kdict,title_dict in zip((range(1,51)),list,T_List):
+for x,kdict,title_dict,first_occ_dict in zip((range(1,51)),list,T_List,first_occ_dict_list):
     x = str(x)
     f = open("news_k50/k"+x+".txt",encoding="utf8")
+    # i use for indicating the title
     i = 0
+    word_no = 1
     read = f.readlines()
     for line in read:
         for word in line.split():
@@ -38,28 +45,35 @@ for x,kdict,title_dict in zip((range(1,51)),list,T_List):
             word = word.lower()
             # storing all word of individual article in their individual dictionary and titles in their title dict
             if word not in ignoreWordDict:
+                # title dictionary
                 if i == 0:
                     if word not in title_dict:
                         title_dict[word] = 1
                     else:
                         title_dict[word] += 1
+                # individual dictionary
                 if word in kdict:
                     kdict[word] += 1
                 else:
                     kdict[word] = 1
+                # first occur dict for the final rule
+                if word not in first_occ_dict:
+                    first_occ_dict[word] = word_no
                 # storing all words of all article in AllWordDict word as key and list of article(in which the word is present) as value
                 if word in AllWordDict:
                     if  "k"+x not in AllWordDict[word]:
                         AllWordDict[word] = AllWordDict[word] + ["k"+x]
                 else:
                     AllWordDict[word] = ["k"+x]
+            word_no += 1
         i += 1
     f.close()
 # for x in T_List:
 #     print(x)
 #     print()
 
-
+# for x in first_occ_dict_list:
+    # print(x)
 # Retrival starts here
 # taking inputs
 while 1:
@@ -98,20 +112,26 @@ while 1:
     # 1st by query word all over article
     # 2nd by query word in the title
     # 3rd by freq of query word 
+    # 4th by word that occur in starting of the document(article)
     list3 = []
     dict4 = {}
     for article,y in dictOfAllWord2.items():
-        queryWord, titleWord, freq = 0,0,0
+        queryWord, titleWord, freq, first_occ = 0,0,0,float("inf")
         queryWord = len(y)
         for i in y:
             if i in T_List[int(article[1:-2]) -1]:
                 titleWord += T_List[int(article[1:-2]) -1][i]
             freq += list[int(article[1:-2]) - 1][i]
-        dict4[article] = [queryWord,titleWord,freq]
+            if first_occ == float("inf"):
+                first_occ = first_occ_dict_list[int(article[1:-2]) -1][i]
+            else:
+                first_occ += first_occ_dict_list[int(article[1:-2]) -1][i]
+        dict4[article] = [queryWord,titleWord,freq,first_occ]
     # print()
     # print(dict4)
 
-    list3 = sorted(dict4.keys(),key=lambda x: dict4[x], reverse=True)
+    #sorting query word, freq in decreasing order and first_occ by increasing order
+    list3 = sorted(dict4.keys(),key=lambda x: (dict4[x][0],dict4[x][1],dict4[x][2],-dict4[x][3]), reverse=True)
 
     #removing the k part and printing only the no. of articles
     FinalList = []
@@ -125,3 +145,4 @@ while 1:
     # ranking rules that this program follows is
     # more query word matches in the article and after that it follows second rule the more queryword matched in the title
     # and third rule which is the sum of all frequecy query words
+    # fourth rule is word that occur in starting of the document(article)
